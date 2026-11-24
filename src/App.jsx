@@ -1,122 +1,185 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import { Navbar } from './components/Navbar';
+import { Hero } from './components/Hero';
+import { Mission } from './components/Mission';
+import { Communities } from './components/Communities';
+import { NeedsCatalog } from './components/NeedsCatalog';
+import { VolunteerSection } from './components/VolunteerSection';
+import { DonationSection } from './components/DonationSection';
+import { CampaignsSection } from './components/CampaignsSection';
+import { ResultsSection } from './components/ResultsSection';
+import { ContactSection } from './components/ContactSection';
+import { Footer } from './components/Footer';
+import { CommunityModal, HelpModal, VolunteerBadgeModal } from './components/Modals';
 
-function App() {
-  const [count, setCount] = useState(0)
+export function App() {
+  const [activeSection, setActiveSection] = useState('inicio');
+  const [selectedCommunity, setSelectedCommunity] = useState(null);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+  const [volunteerBadgeData, setVolunteerBadgeData] = useState(null);
+  const [preselectedResource, setPreselectedResource] = useState(null);
+
+  // Track scroll position to update active nav item
+  useEffect(() => {
+    const sectionIds = [
+      'inicio',
+      'mision',
+      'comunidades',
+      'necesidades',
+      'voluntariado',
+      'donaciones',
+      'campanas',
+      'resultados',
+      'contacto'
+    ];
+
+    const handleScroll = () => {
+      const scrollY = window.pageYOffset;
+      const navOffset = 180;
+
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const id = sectionIds[i];
+        const el = document.getElementById(id);
+        if (el) {
+          const top = el.offsetTop - navOffset;
+          if (scrollY >= top) {
+            setActiveSection(id);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToId = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const navHeight = 80;
+      const elementPosition = el.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({
+        top: elementPosition - navHeight,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const handleOpenHelpModal = () => {
+    setIsHelpModalOpen(true);
+  };
+
+  const handleHelpOptionSelect = (option) => {
+    if (option === 'donar-materiales' || option === 'aporte-economico') {
+      scrollToId('donaciones');
+    } else if (option === 'voluntariado') {
+      scrollToId('voluntariado');
+    }
+  };
+
+  const handleDonateToCommunity = (community) => {
+    setPreselectedResource({
+      title: `Donación especial para ${community.name} (${community.schoolName})`
+    });
+    scrollToId('donaciones');
+  };
+
+  const handleDonateItem = (item) => {
+    setPreselectedResource(item);
+    scrollToId('donaciones');
+  };
+
+  const handleParticipateCampaign = (_campaign) => {
+    scrollToId('voluntariado');
+  };
+
+  const handleVolunteerSuccess = (formData) => {
+    setVolunteerBadgeData(formData);
+  };
+
+  const handleDonationRegistered = (data) => {
+    console.log("Donación registrada:", data);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app-layout">
+      {/* Navigation Header */}
+      <Navbar
+        onOpenHelpModal={handleOpenHelpModal}
+        activeSection={activeSection}
+      />
 
-      <div className="ticks"></div>
+      <main>
+        {/* 1. Inicio (Hero) */}
+        <Hero
+          onOpenHelpModal={handleOpenHelpModal}
+          onExploreCommunities={() => scrollToId('comunidades')}
+        />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        {/* 2. Nuestra Misión */}
+        <Mission
+          onOpenHelpModal={handleOpenHelpModal}
+        />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {/* 3. Comunidades */}
+        <Communities
+          onSelectCommunity={(comm) => setSelectedCommunity(comm)}
+          onDonateToCommunity={handleDonateToCommunity}
+        />
+
+        {/* 4. Necesitamos tu Ayuda */}
+        <NeedsCatalog
+          onDonateItem={handleDonateItem}
+        />
+
+        {/* 5. Voluntariado */}
+        <VolunteerSection
+          onVolunteerSuccess={handleVolunteerSuccess}
+        />
+
+        {/* 6. Donaciones */}
+        <DonationSection
+          onDonationRegistered={handleDonationRegistered}
+          preselectedResource={preselectedResource}
+        />
+
+        {/* 7. Campañas */}
+        <CampaignsSection
+          onParticipateCampaign={handleParticipateCampaign}
+        />
+
+        {/* 8. Resultados */}
+        <ResultsSection />
+
+        {/* 9. Contacto */}
+        <ContactSection />
+      </main>
+
+      {/* Footer */}
+      <Footer
+        onOpenHelpModal={handleOpenHelpModal}
+      />
+
+      {/* Interactive Modals */}
+      <CommunityModal
+        community={selectedCommunity}
+        onClose={() => setSelectedCommunity(null)}
+        onDonateToCommunity={handleDonateToCommunity}
+      />
+
+      <HelpModal
+        isOpen={isHelpModalOpen}
+        onClose={() => setIsHelpModalOpen(false)}
+        onSelectOption={handleHelpOptionSelect}
+      />
+
+      <VolunteerBadgeModal
+        volunteerData={volunteerBadgeData}
+        onClose={() => setVolunteerBadgeData(null)}
+      />
+    </div>
+  );
 }
 
-export default App
+export default App;
