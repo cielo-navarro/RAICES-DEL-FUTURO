@@ -15,7 +15,8 @@ export const Navbar = ({ onOpenHelpModal, activeSection }) => {
 
   const navLinks = [
     { href: "#inicio", label: "Inicio" },
-    { href: "#mision", label: "Nuestra Misión" },
+    { href: "#mision", label: "Misión" },
+    { href: "#ruta-fluvial", label: "Ruta Fluvial" },
     { href: "#comunidades", label: "Comunidades" },
     { href: "#necesidades", label: "Necesidades" },
     { href: "#voluntariado", label: "Voluntariado" },

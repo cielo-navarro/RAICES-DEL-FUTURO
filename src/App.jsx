@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
+import { MarqueeStrip } from './components/MarqueeStrip';
 import { Mission } from './components/Mission';
+import { RiverJourney } from './components/RiverJourney';
 import { Communities } from './components/Communities';
 import { NeedsCatalog } from './components/NeedsCatalog';
 import { VolunteerSection } from './components/VolunteerSection';
@@ -11,6 +13,7 @@ import { ResultsSection } from './components/ResultsSection';
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { CommunityModal, HelpModal, VolunteerBadgeModal } from './components/Modals';
+import { AmbientAudio } from './components/AmbientAudio';
 
 export function App() {
   const [activeSection, setActiveSection] = useState('inicio');
@@ -24,6 +27,7 @@ export function App() {
     const sectionIds = [
       'inicio',
       'mision',
+      'ruta-fluvial',
       'comunidades',
       'necesidades',
       'voluntariado',
@@ -80,7 +84,21 @@ export function App() {
 
   const handleDonateToCommunity = (community) => {
     setPreselectedResource({
-      title: `Donación especial para ${community.name} (${community.schoolName})`
+      title: `Donación especial para ${community.name} (${community.schoolName || ''})`
+    });
+    scrollToId('donaciones');
+  };
+
+  const handleDonateToStop = (stop) => {
+    setPreselectedResource({
+      title: `Cargamento fluvial prioritario para ${stop.name} (${stop.river})`
+    });
+    scrollToId('donaciones');
+  };
+
+  const handleQuickPledge = (amount) => {
+    setPreselectedResource({
+      title: `Padrinazgo Escolar de S/. ${amount} Soles`
     });
     scrollToId('donaciones');
   };
@@ -111,15 +129,24 @@ export function App() {
       />
 
       <main>
-        {/* 1. Inicio (Hero) */}
+        {/* 1. Inicio (Hero with simulator) */}
         <Hero
           onOpenHelpModal={handleOpenHelpModal}
           onExploreCommunities={() => scrollToId('comunidades')}
+          onQuickPledge={handleQuickPledge}
         />
+
+        {/* Marquee continuous river ticker */}
+        <MarqueeStrip />
 
         {/* 2. Nuestra Misión */}
         <Mission
           onOpenHelpModal={handleOpenHelpModal}
+        />
+
+        {/* Interactive WOW: La Ruta Fluvial de la Educación */}
+        <RiverJourney
+          onDonateToStop={handleDonateToStop}
         />
 
         {/* 3. Comunidades */}
@@ -133,18 +160,18 @@ export function App() {
           onDonateItem={handleDonateItem}
         />
 
-        {/* 5. Voluntariado */}
+        {/* 5. Voluntariado con Carné en Vivo */}
         <VolunteerSection
           onVolunteerSuccess={handleVolunteerSuccess}
         />
 
-        {/* 6. Donaciones */}
+        {/* 6. Donaciones con Calculadora y Cuentas Copiables */}
         <DonationSection
           onDonationRegistered={handleDonationRegistered}
           preselectedResource={preselectedResource}
         />
 
-        {/* 7. Campañas */}
+        {/* 7. Campañas Fluviales */}
         <CampaignsSection
           onParticipateCampaign={handleParticipateCampaign}
         />
@@ -178,6 +205,9 @@ export function App() {
         volunteerData={volunteerBadgeData}
         onClose={() => setVolunteerBadgeData(null)}
       />
+
+      {/* Ambient Rainforest and River Audio Toggle */}
+      <AmbientAudio />
     </div>
   );
 }
