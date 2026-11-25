@@ -155,8 +155,9 @@ export const NeedsCatalog = ({ onDonateItem }) => {
 
       <style>{`
         .needs-section {
-          background-color: var(--color-beige-bg);
+          background: #ffffff;
         }
+        .needs-section .section-title { color: var(--c-forest); }
         .filters-wrapper {
           display: flex;
           align-items: center;
@@ -239,15 +240,23 @@ export const NeedsCatalog = ({ onDonateItem }) => {
           justify-content: space-between;
           margin-bottom: 1.25rem;
         }
+        .resource-card {
+          transition: all 0.4s var(--ease) !important;
+        }
+        .resource-card:hover {
+          border-color: rgba(34,160,90,0.4) !important;
+          box-shadow: 0 30px 60px rgba(5,15,9,0.14) !important;
+        }
         .res-icon-wrap {
-          width: 50px;
-          height: 50px;
+          width: 54px;
+          height: 54px;
           border-radius: 14px;
-          background-color: var(--color-mint-light);
-          color: var(--color-primary);
+          background: linear-gradient(135deg, #e6faf0, #c8f5df);
+          color: var(--c-forest);
           display: flex;
           align-items: center;
           justify-content: center;
+          box-shadow: 0 4px 16px rgba(34,160,90,0.2);
         }
         .res-badge-wrap {
           display: flex;
@@ -289,16 +298,17 @@ export const NeedsCatalog = ({ onDonateItem }) => {
           color: var(--color-forest);
         }
         .progress-track {
-          height: 8px;
-          background-color: #e5ded5;
-          border-radius: var(--radius-full);
+          height: 10px;
+          background: rgba(0,0,0,0.08);
+          border-radius: var(--r-full);
           overflow: hidden;
         }
         .progress-fill {
           height: 100%;
-          background: linear-gradient(90deg, var(--color-sage) 0%, var(--color-forest) 100%);
-          border-radius: var(--radius-full);
-          transition: width 0.6s ease;
+          background: linear-gradient(90deg, #22a05a 0%, #4ecb84 100%);
+          border-radius: var(--r-full);
+          transition: width 0.9s ease;
+          box-shadow: 0 2px 8px rgba(34,160,90,0.4);
         }
         .res-destination {
           margin-bottom: 1.4rem;
@@ -329,7 +339,7 @@ export const NeedsCatalog = ({ onDonateItem }) => {
           margin-top: auto;
         }
         .materials-note-card {
-          background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
+          background: linear-gradient(135deg, #0d2b1a 0%, #174730 60%, #22a05a 100%);
           color: #ffffff;
           border-radius: var(--radius-xl);
           padding: 2.2rem 2.8rem;

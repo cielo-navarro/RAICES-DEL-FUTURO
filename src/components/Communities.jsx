@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { COMMUNITIES } from '../data/mockData';
-import { IconMapPin, IconUsers, IconBoat, IconHeart, IconGraduation, IconArrowRight } from './Icons';
+import { IconMapPin, IconUsers, IconBoat, IconHeart, IconArrowRight } from './Icons';
 
 export const Communities = ({ onSelectCommunity, onDonateToCommunity }) => {
   const [selectedCuenca, setSelectedCuenca] = useState('all');
 
   const cuencas = [
-    { id: 'all', label: 'Todas las Cuencas' },
-    { id: 'Río Nanay', label: 'Cuenca Río Nanay' },
-    { id: 'Río Amazonas', label: 'Cuenca Río Amazonas' },
-    { id: 'Río Ucayali', label: 'Cuenca Río Ucayali' },
+    { id: 'all', label: 'Todas', emoji: '🌊' },
+    { id: 'Río Nanay', label: 'Río Nanay', emoji: '🛶' },
+    { id: 'Río Amazonas', label: 'Río Amazonas', emoji: '⛵' },
+    { id: 'Río Ucayali', label: 'Río Ucayali', emoji: '🚤' },
   ];
 
   const filteredCommunities = selectedCuenca === 'all'
@@ -19,111 +19,108 @@ export const Communities = ({ onSelectCommunity, onDonateToCommunity }) => {
   return (
     <section id="comunidades" className="communities-section section-padding">
       <div className="container">
-        {/* Header */}
         <div className="section-header">
-          <span className="section-tag">
-            <IconMapPin size={16} />
-            <span>Nuestras Comunidades</span>
-          </span>
+          <span className="section-tag"><IconMapPin size={15} /> Nuestras Comunidades</span>
           <h2 className="section-title">
-            Comunidades rurales de Loreto que acompañamos
+            Comunidades rurales que{' '}
+            <span className="gradient-text-forest">acompañamos</span>
           </h2>
           <p className="section-subtitle">
-            Conoce a las escuelas, docentes y escolares que forman parte de la familia de Raíces del Futuro.
-            Cada comunidad tiene características geográficas y requerimientos prioritarios únicos.
+            Conoce las escuelas, docentes y niños que forman parte de la familia de Raíces del Futuro.
+            Cada comunidad tiene necesidades únicas que tú puedes ayudar a cubrir.
           </p>
         </div>
 
-        {/* Filter Tabs by Cuenca */}
-        <div className="cuenca-filter-tabs">
-          {cuencas.map((cuenca) => (
+        {/* Filter tabs */}
+        <div className="cuenca-tabs">
+          {cuencas.map(c => (
             <button
-              key={cuenca.id}
+              key={c.id}
               type="button"
-              className={`filter-tab ${selectedCuenca === cuenca.id ? 'active' : ''}`}
-              onClick={() => setSelectedCuenca(cuenca.id)}
+              className={`cuenca-tab ${selectedCuenca === c.id ? 'active' : ''}`}
+              onClick={() => setSelectedCuenca(c.id)}
             >
-              <IconBoat size={15} />
-              <span>{cuenca.label}</span>
+              <span>{c.emoji}</span>
+              <span>{c.label}</span>
             </button>
           ))}
         </div>
 
-        {/* Communities Grid */}
-        <div className="communities-grid">
-          {filteredCommunities.map((community) => (
-            <div key={community.id} className="community-card card-base">
-              {/* Image & Urgency */}
-              <div className="comm-img-box">
-                <img
-                  src={community.image}
-                  alt={community.name}
-                  className="comm-img"
-                  loading="lazy"
-                />
-                <span className={`comm-urgency-badge ${community.urgencyClass}`}>
-                  Urgencia: {community.urgency}
+        {/* Grid */}
+        <div className="comm-grid">
+          {filteredCommunities.map(comm => (
+            <div key={comm.id} className="comm-card">
+              {/* Image */}
+              <div className="comm-img-wrap">
+                <img src={comm.image} alt={comm.name} className="comm-img" loading="lazy" />
+                <div className="comm-img-overlay" />
+                <span className={`comm-urgency ${comm.urgencyClass}`}>
+                  {comm.urgency === 'Crítica' ? '🔴' : comm.urgency === 'Alta' ? '🟡' : '🟢'} {comm.urgency}
                 </span>
-                <span className="comm-cuenca-tag">
-                  {community.cuenca}
+                <span className="comm-cuenca-pill">
+                  <IconBoat size={12} /> {comm.cuenca}
                 </span>
+                {/* Hover CTA overlay */}
+                <div className="comm-hover-overlay">
+                  <button
+                    type="button"
+                    className="btn btn-white btn-sm"
+                    onClick={() => onSelectCommunity(comm)}
+                  >
+                    Ver detalles <IconArrowRight size={14} />
+                  </button>
+                </div>
               </div>
 
-              {/* Card Body */}
+              {/* Body */}
               <div className="comm-body">
-                <div className="comm-school-header">
-                  <h3 className="comm-name">{community.name}</h3>
-                  <span className="comm-school-name">{community.schoolName}</span>
-                </div>
-
-                <p className="comm-desc">{community.description}</p>
-
-                {/* Key specs */}
-                <div className="comm-specs">
-                  <div className="spec-row">
-                    <IconBoat size={16} className="spec-icon" />
-                    <span><strong>Acceso:</strong> {community.distance}</span>
+                <div className="comm-header-row">
+                  <div>
+                    <h3 className="comm-name">{comm.name}</h3>
+                    <span className="comm-school">{comm.schoolName}</span>
                   </div>
-                  <div className="spec-row">
-                    <IconUsers size={16} className="spec-icon" />
-                    <span><strong>Escolares:</strong> {community.students}</span>
-                  </div>
-                  <div className="spec-row">
-                    <IconGraduation size={16} className="spec-icon" />
-                    <span><strong>Docente a cargo:</strong> {community.teacher}</span>
+                  <div className="comm-students-badge">
+                    <IconUsers size={14} />
+                    <span>{comm.students}</span>
                   </div>
                 </div>
 
-                {/* Needs Preview Pills */}
-                <div className="comm-needs-box">
-                  <span className="needs-label">Necesidades prioritarias:</span>
-                  <div className="needs-pills">
-                    {community.mainNeeds.map((need, idx) => (
-                      <span key={idx} className="need-pill">
-                        • {need}
-                      </span>
+                <p className="comm-desc">{comm.description}</p>
+
+                {/* Needs */}
+                <div className="comm-needs">
+                  <span className="needs-title">🎯 Necesidades prioritarias</span>
+                  <div className="needs-list">
+                    {comm.mainNeeds.slice(0, 3).map((n, i) => (
+                      <span key={i} className="need-tag">{n}</span>
                     ))}
                   </div>
                 </div>
 
-                {/* Card Actions */}
+                {/* Access info */}
+                <div className="comm-access">
+                  <IconBoat size={14} />
+                  <span>{comm.distance}</span>
+                </div>
+
+                {/* Actions */}
                 <div className="comm-actions">
                   <button
                     type="button"
-                    className="btn btn-outline btn-sm w-full"
-                    onClick={() => onSelectCommunity(community)}
+                    className="btn btn-outline btn-sm"
+                    onClick={() => onSelectCommunity(comm)}
+                    style={{ flex: 1 }}
                   >
-                    <span>Ver detalles y lista</span>
-                    <IconArrowRight size={15} />
+                    Ver detalles
                   </button>
-
                   <button
                     type="button"
-                    className="btn btn-primary btn-sm w-full"
-                    onClick={() => onDonateToCommunity(community)}
+                    className="btn btn-primary btn-sm"
+                    onClick={() => onDonateToCommunity(comm)}
+                    style={{ flex: 1 }}
                   >
-                    <IconHeart size={15} fill={true} />
-                    <span>Apoyar a esta escuela</span>
+                    <IconHeart size={14} fill={true} />
+                    Apoyar
                   </button>
                 </div>
               </div>
@@ -134,9 +131,12 @@ export const Communities = ({ onSelectCommunity, onDonateToCommunity }) => {
 
       <style>{`
         .communities-section {
-          background-color: #ffffff;
+          background: linear-gradient(180deg, #f4fdf8 0%, #ffffff 100%);
         }
-        .cuenca-filter-tabs {
+        .communities-section .section-title { color: var(--c-forest); }
+
+        /* Filter tabs */
+        .cuenca-tabs {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -144,165 +144,146 @@ export const Communities = ({ onSelectCommunity, onDonateToCommunity }) => {
           flex-wrap: wrap;
           margin-bottom: 3.5rem;
         }
-        .filter-tab {
+        .cuenca-tab {
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
-          padding: 0.65rem 1.35rem;
-          border-radius: var(--radius-full);
-          background: #f7f3ec;
-          border: 1px solid var(--border-light);
-          color: var(--text-muted);
-          font-size: 0.92rem;
-          font-weight: 600;
+          padding: 0.65rem 1.4rem;
+          border-radius: 999px;
+          background: #f4f8f5;
+          border: 1.5px solid rgba(0,0,0,0.08);
+          color: var(--c-text-muted);
+          font-size: 0.9rem;
+          font-weight: 700;
           cursor: pointer;
-          transition: all var(--transition-fast);
+          transition: all 0.25s ease;
         }
-        .filter-tab:hover {
-          background: #efe9de;
-          color: var(--color-primary-dark);
+        .cuenca-tab:hover {
+          background: #e6faf0;
+          border-color: rgba(34,160,90,0.3);
+          color: var(--c-forest);
         }
-        .filter-tab.active {
-          background: var(--color-primary);
+        .cuenca-tab.active {
+          background: var(--c-forest);
+          border-color: var(--c-forest);
           color: #ffffff;
-          border-color: var(--color-primary);
-          box-shadow: 0 4px 12px rgba(27, 67, 50, 0.2);
+          box-shadow: 0 6px 20px rgba(13,43,26,0.25);
         }
-        .communities-grid {
+
+        /* Grid */
+        .comm-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 2rem;
         }
-        @media (max-width: 1024px) {
-          .communities-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-        }
-        @media (max-width: 680px) {
-          .communities-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-        .community-card {
+        @media (max-width: 1024px) { .comm-grid { grid-template-columns: repeat(2,1fr); } }
+        @media (max-width: 680px)  { .comm-grid { grid-template-columns: 1fr; } }
+
+        /* Card */
+        .comm-card {
+          border-radius: 20px;
+          overflow: hidden;
+          border: 1.5px solid rgba(0,0,0,0.07);
+          background: #ffffff;
+          box-shadow: 0 8px 28px rgba(5,15,9,0.07);
+          transition: all 0.4s var(--ease);
           display: flex;
           flex-direction: column;
-          overflow: hidden;
         }
-        .comm-img-box {
+        .comm-card:hover {
+          transform: translateY(-10px);
+          box-shadow: 0 30px 60px rgba(5,15,9,0.15);
+          border-color: rgba(34,160,90,0.3);
+        }
+
+        /* Image */
+        .comm-img-wrap {
           position: relative;
-          height: 220px;
+          height: 240px;
           overflow: hidden;
         }
         .comm-img {
-          width: 100%;
-          height: 100%;
+          width: 100%; height: 100%;
           object-fit: cover;
-          transition: transform 0.5s ease;
+          display: block;
+          transition: transform 0.6s ease;
         }
-        .community-card:hover .comm-img {
-          transform: scale(1.05);
+        .comm-card:hover .comm-img { transform: scale(1.08); }
+        .comm-img-overlay {
+          position: absolute; inset: 0;
+          background: linear-gradient(180deg, transparent 50%, rgba(5,15,9,0.5) 100%);
         }
-        .comm-urgency-badge {
-          position: absolute;
-          top: 14px;
-          right: 14px;
-          font-size: 0.76rem;
-          font-weight: 700;
-          padding: 0.3rem 0.75rem;
-          border-radius: var(--radius-full);
-          box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        .comm-urgency {
+          position: absolute; top: 14px; right: 14px;
+          font-size: 0.75rem; font-weight: 800;
+          padding: 0.3rem 0.8rem;
+          border-radius: 999px;
+          background: rgba(255,255,255,0.95);
+          color: var(--c-text);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
-        .comm-cuenca-tag {
-          position: absolute;
-          bottom: 12px;
-          left: 14px;
-          background: rgba(19, 51, 36, 0.82);
-          backdrop-filter: blur(6px);
-          color: #ffffff;
-          font-size: 0.78rem;
-          font-weight: 600;
-          padding: 0.25rem 0.75rem;
-          border-radius: var(--radius-full);
+        .comm-cuenca-pill {
+          position: absolute; bottom: 14px; left: 14px;
+          display: inline-flex; align-items: center; gap: 0.4rem;
+          background: rgba(13,43,26,0.85);
+          backdrop-filter: blur(8px);
+          color: #a8f0c6;
+          font-size: 0.75rem; font-weight: 700;
+          padding: 0.3rem 0.8rem;
+          border-radius: 999px;
         }
-        .comm-body {
-          padding: 1.8rem;
-          display: flex;
-          flex-direction: column;
-          flex-grow: 1;
+
+        /* Hover overlay */
+        .comm-hover-overlay {
+          position: absolute; inset: 0;
+          background: rgba(13,43,26,0.6);
+          backdrop-filter: blur(4px);
+          display: flex; align-items: center; justify-content: center;
+          opacity: 0;
+          transition: opacity 0.3s ease;
         }
-        .comm-school-header {
-          margin-bottom: 0.9rem;
-        }
-        .comm-name {
-          font-size: 1.35rem;
-          color: var(--color-primary-dark);
-          line-height: 1.25;
-          margin-bottom: 0.25rem;
-        }
-        .comm-school-name {
-          font-size: 0.85rem;
-          color: var(--color-forest);
-          font-weight: 600;
-        }
-        .comm-desc {
-          font-size: 0.9rem;
-          color: var(--text-muted);
-          line-height: 1.55;
-          margin-bottom: 1.2rem;
-          flex-grow: 1;
-        }
-        .comm-specs {
-          background-color: #faf7f2;
-          padding: 0.9rem 1.1rem;
-          border-radius: var(--radius-md);
-          display: flex;
-          flex-direction: column;
-          gap: 0.55rem;
-          margin-bottom: 1.2rem;
-        }
-        .spec-row {
+        .comm-card:hover .comm-hover-overlay { opacity: 1; }
+
+        /* Body */
+        .comm-body { padding: 1.6rem; display: flex; flex-direction: column; flex-grow: 1; gap: 1rem; }
+
+        .comm-header-row {
           display: flex;
           align-items: flex-start;
-          gap: 0.6rem;
-          font-size: 0.83rem;
-          color: var(--text-main);
-          line-height: 1.4;
+          justify-content: space-between;
+          gap: 0.75rem;
         }
-        .spec-icon {
-          color: var(--color-forest);
+        .comm-name { font-size: 1.2rem; color: var(--c-forest); line-height: 1.25; margin-bottom: 0.2rem; }
+        .comm-school { font-size: 0.8rem; color: var(--c-emerald); font-weight: 700; }
+        .comm-students-badge {
+          display: inline-flex; align-items: center; gap: 0.3rem;
+          background: #e6faf0; color: var(--c-forest);
+          font-size: 0.78rem; font-weight: 800;
+          padding: 0.3rem 0.7rem; border-radius: 999px;
           flex-shrink: 0;
-          margin-top: 1px;
+          border: 1px solid #c8f5df;
         }
-        .comm-needs-box {
-          margin-bottom: 1.4rem;
+
+        .comm-desc { font-size: 0.88rem; color: var(--c-text-muted); line-height: 1.55; }
+
+        .comm-needs { display: flex; flex-direction: column; gap: 0.5rem; }
+        .needs-title { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--c-forest); }
+        .needs-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .need-tag {
+          font-size: 0.75rem; font-weight: 600;
+          background: #e6faf0; color: var(--c-forest);
+          padding: 0.2rem 0.65rem; border-radius: 6px;
+          border: 1px solid #c8f5df;
         }
-        .needs-label {
-          display: block;
-          font-size: 0.78rem;
-          font-weight: 700;
-          color: var(--color-primary-dark);
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
-          margin-bottom: 0.45rem;
+
+        .comm-access {
+          display: flex; align-items: center; gap: 0.4rem;
+          font-size: 0.8rem; color: var(--c-text-muted); font-weight: 600;
+          background: #f8faf9; padding: 0.5rem 0.8rem; border-radius: 8px;
         }
-        .needs-pills {
-          display: flex;
-          flex-direction: column;
-          gap: 0.3rem;
-        }
-        .need-pill {
-          font-size: 0.82rem;
-          color: var(--color-primary);
-          background-color: var(--color-mint-light);
-          padding: 0.2rem 0.6rem;
-          border-radius: 6px;
-          display: inline-block;
-          font-weight: 600;
-        }
+
         .comm-actions {
-          display: flex;
-          flex-direction: column;
-          gap: 0.6rem;
+          display: flex; gap: 0.6rem;
           margin-top: auto;
         }
       `}</style>
